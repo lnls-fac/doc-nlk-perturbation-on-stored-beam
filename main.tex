@@ -1,0 +1,141 @@
+% !TeX spellcheck = en_GB
+% !TeX program = lualatex
+%
+% v 2.3  Feb 2019   Volker RW Schaa
+%		# changes in the collaboration therefore updated file "jacow-collaboration.tex"
+%		# all References with DOIs have their period/full stop before the DOI (after pp. or year)
+%		# in the author/affiliation block all ZIP codes in square brackets removed as it was not %         understood as optional parameter and ZIP codes had bin put in brackets
+%       # References to the current IPAC are changed to "IPAC'19, Melbourne, Australia"
+%       # font for ‘url’ style changed to ‘newtxtt’ as it is easier to distinguish "O" and "0"
+%
+\documentclass[a4paper,
+               %boxit,        % check whether paper is inside correct margins
+               %titlepage,    % separate title page
+               %refpage       % separate references
+               %biblatex,     % biblatex is used
+               keeplastbox,   % flushend option: not to un-indent last line in References
+               %nospread,     % flushend option: do not fill with whitespace to balance columns
+               %hyphens,      % allow \url to hyphenate at "-" (hyphens)
+               %xetex,        % use XeLaTeX to process the file
+               %luatex,       % use LuaLaTeX to process the file
+               ]{jacow}
+%
+% ONLY FOR \footnote in table/tabular
+%
+\usepackage{pdfpages,multirow,ragged2e} %
+\usepackage{tablefootnote}
+%
+% CHANGE SEQUENCE OF GRAPHICS EXTENSION TO BE EMBEDDED
+% ----------------------------------------------------
+% test for XeTeX where the sequence is by default eps-> pdf, jpg, png, pdf, ...
+%    and the JACoW template provides JACpic2v3.eps and JACpic2v3.jpg which
+%    might generates errors, therefore PNG and JPG first
+%
+\makeatletter%
+	\ifboolexpr{bool{xetex}}
+	 {\renewcommand{\Gin@extensions}{.pdf,%
+	                    .png,.jpg,.bmp,.pict,.tif,.psd,.mac,.sga,.tga,.gif,%
+	                    .eps,.ps,%
+	                    }}{}
+\makeatother
+\newcommand{\ts}{\textsuperscript}
+% CHECK FOR XeTeX/LuaTeX BEFORE DEFINING AN INPUT ENCODING
+% --------------------------------------------------------
+%   utf8  is default for XeTeX/LuaTeX
+%   utf8  in LaTeX only realises a small portion of codes
+%
+\ifboolexpr{bool{xetex} or bool{luatex}} % test for XeTeX/LuaTeX
+ {}                                      % input encoding is utf8 by default
+ {\usepackage[utf8]{inputenc}}           % switch to utf8
+
+\usepackage[USenglish]{babel}
+\usepackage{subcaption}
+
+%
+% if BibLaTeX is used
+%
+\ifboolexpr{bool{jacowbiblatex}}%
+ {%
+  \addbibresource{jacow-test.bib}
+  \addbibresource{biblatex-examples.bib}
+ }{}
+\listfiles
+
+%%
+%%   Lengths for the spaces in the title
+%%   \setlength\titleblockstartskip{..}  %before title, default 3pt
+%%   \setlength\titleblockmiddleskip{..} %between title + author, default 1em
+%%   \setlength\titleblockendskip{..}    %afterauthor, default 1em
+
+\begin{document}
+
+\title{Perturbação do NLK no feixe estocado}
+
+\author{FAC - LNLS \\ 08 de Março de 2023}
+\maketitle
+%
+\section{Resumo}
+O kicker não-linear (NLK) usado para acumulação de elétrons no anel de armazenamento produz uma perturbação na trajetória do feixe armazenado ao pulsar. As distorções causadas na trajetória do feixe foram medidas com o objetivo de determinar o sinal do kick introduzido pelo NLK, a fim de definir o sentido da corrente dos novos fios de correção a serem introduzidos no upgrade deste dispositivo. 
+
+\section{Distorções no feixe estocado}
+Foi armazenado cerca de 2mA concentrados em alguns pacotes. O trigger dos BPMs foram sincronizados com o pulso do NLK e foi feita um pulso com amplitude igual ao valor para injeção, -2.35mrad. Os gráficos a seguir foram adiquiridos em 2021 e são representativos do que ocorre no feixe estocado durante o pulso do NLK.
+
+Observação: nas Figuras~\ref{fig:effect_bpms} e~\ref{fig:effect_std} foram usados dados de 30/11/2021 para ilustrar o efeito do NLK de forma mais clara, dado que nesta ocasião os BPMs foram configurados para adquirir 60 voltas (10 antes do pulso e 50 depois) e todos BPMs estavam garantidamente sincronizados. Nas aquisições de 2023, foram feitas medidas por mais de 1000 voltas. Nestes casos, há um problema, ainda não entendido, de dessincronização dos BPMs, que compromete, em princípio, a análise da distorção gerada pelo NLK. Porém foi verificado que, independente deste problema da sincronia dos BPMs, a conclusão é a mesma a respeito das direções dos campos introduzidos pelo NLK.
+\begin{figure}[!h]
+    \centering
+    \includegraphics*[width=0.5\textwidth]{nlk_kick_effect.png}
+    \caption{Distorção normalizada da trajetória em todos os BPMs na taxa volta-a-volta antes e depois do pulso do NLK. Dados de 30/11/2021.}
+    \label{fig:effect_bpms}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics*[width=0.5\textwidth]{nlk_kick_effect_std.png}
+    \caption{Distorção std em todos BPMs antes e depois do pulso do NLK. Dados de 30/11/2021.}
+    \label{fig:effect_std}
+\end{figure}
+\section{Fitting de condições iniciais no NLK}
+Com dados volta-a-volta em todos BPMs, é possível ajustar, utilizando o modelo do SIRIUS, as condições iniciais de posição e ângulo $(x_0, x_0', y_0, y_0')$ no local do NLK. Com isso, podemos determinar o ângulo no NLK em cada volta, de modo que na volta que o NLK pulsa, podemos determinar o kick pela descontinuidade em $x'$. 
+
+Podemos ver um ajuste da trajetória horizontal em comparação com medidas na Figura~\ref{fig:fit_traj}. O ângulo ajustado em cada volta está apresentado na Figura~\ref{fig:fit_angle}. Neste caso, podemos concluir que o kick introduzido pelo NLK foi de 21$\mu$rad. Sendo o kick principal no feixe injetado de $-2.35$mrad, o kick no feixe estocado é cerca de 1\% do kick principal.
+% $y_0 = 1.6\mu$m, $y_0'=-9.5\mu$rad
+\begin{figure}
+    \centering
+    \includegraphics*[width=0.5\textwidth]{fit_traj.png}
+    \caption{Trajetória horizontal logo após o kick do NLK. Medidas e ajustes pelo modelo. A condição inicial obtida foi $x_0 = -37\mu$m, $x_0' = 21\mu$rad. Dados de 06/03/2023.}
+    \label{fig:fit_traj}
+\end{figure}
+\begin{figure}
+    \centering
+    \includegraphics*[width=0.5\textwidth]{fit_kick_turns.png}
+    \caption{Kicks horizontal e vertical ajustados volta-a-volta. Dados de 06/03/2023.}
+    \label{fig:fit_angle}
+\end{figure}
+
+Uma outra maneira de visualizar o efeito é pelo gráfico do espaço de fase transversal na Figura~\ref{fig:phase_space}. O feixe inicialmente está em torno da origem e ao pulsar o NLK, ganha uma amplitude de ângulo de 20$\mu$rad e passa a oscilar com amplitudes de até 400$\mu$m no local do NLK (em outros pontos do anel a amplitude pode passar de 500$\mu$m).
+\begin{figure}[!h]
+    \centering
+    \includegraphics*[width=0.5\textwidth]{phase_space.png}
+    \caption{Espaço de fase tranversal com o pulso do NLK. Dados de 06/03/2023.}
+    \label{fig:phase_space}
+\end{figure}
+\section{Sentido das correntes dos fios}
+
+Com os resultados anteriores, podemos concluir que o NLK introduz kicks no feixe estocado
+\begin{eqnarray*}
+\theta_x \approx +20\mu\text{rad} &\to& B_yL \approx +200 \text{G.cm} \\
+\theta_y \approx -10\mu\text{rad} &\to& B_xL \approx +100 \text{G.cm} 
+\end{eqnarray*}
+considerando rigidez magnética $R=10$T.m para 3GeV. Sendo o comprimento do NLK $L=45$cm, os campos da perturbação seriam aproximadamente $B_y\approx+5$ Gauss e $B_x\approx+2.5$ Gauss. 
+
+Deste forma os campos de correção devem ter sinal contrário, negativos, portanto. 
+% Para produzir os campos \textbf{horizontal negativo} $\vec{B}_x = -|B_x|\hat{x}$ (para dentro, em direção ao centro do anel) e \textbf{vertical negativo} $\vec{B}_y = -|B_y| \hat{y}$ (para baixo, em direção ao piso do túnel), as correntes nos fios devem seguir o esquema apresentado na Figura~\ref{fig:nlk_wires}.
+Para produzir tais campos, as correntes nos fios devem seguir o esquema apresentado na Figura~\ref{fig:nlk_wires}.
+\begin{figure}
+    \centering
+    \includegraphics*[width=0.45\textwidth]{nlk_wires.png}
+    \caption{Esquema do sentido das correntes para produzir campos magnéticos \textbf{horizontal negativo} $\vec{B}_x = -|B_x|\hat{x}$ (para dentro, em direção ao centro do anel) e \textbf{vertical negativo} $\vec{B}_y = -|B_y| \hat{y}$ (para baixo, em direção ao piso).}
+    \label{fig:nlk_wires}
+\end{figure}
+\section{Conclusão}
+A partir da análise da distorção de trajetória causada no feixe armazenado ao pulsar o NLK, foi possível determinar que o elemento pulsado introduz kicks com sinal positivo na horizontal e negativo na vertical. Em termos de campos magnéticos, isso significa que os campos de perturbação estão na direção positiva dos eixos $(x, y)$. Deste modo,\textbf{os campos de correção devem ser: horizontal negativo $\vec{B}_x = -|B_x|\hat{x}$ (para dentro, em direção ao centro do anel) e vertical negativo $\vec{B}_y = -|B_y| \hat{y}$ (para baixo, em direção ao piso)}. Para produzir campos nestas direções, as correntes nos fios devem seguir as direções esquematizadas na Figura~\ref{fig:nlk_wires}.
+\end{document}
